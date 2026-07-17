@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harshini Durga V — Design Canvas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --canvas: #F5F4FA;
+    --dot: #DCD9EC;
+    --ink: #17151F;
+    --ink-soft: #625E76;
+    --surface: #FFFFFF;
+    --line: #E4E1F0;
+    --pink: #FF5C8A;
+    --pink-soft: #FFE7EE;
+    --blue: #3C6FF0;
+    --blue-soft: #E8EDFF;
+    --yellow: #FFC93C;
+    --yellow-soft: #FFF6DE;
+    --teal: #2FBF9F;
+    --teal-soft: #E4F9F3;
+    --display: 'Sora', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 18px;
+  }
+
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background:
+      radial-gradient(circle, var(--dot) 1.4px, transparent 1.4px);
+    background-size: 26px 26px;
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a{ color: inherit; }
+  ::selection{ background: var(--pink); color: #fff; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  }
+
+  :focus-visible{
+    outline: 2px solid var(--blue);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .wrap{ max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+  /* cursor glow */
+  #glow{
+    position: fixed;
+    top: 0; left: 0;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(255,92,138,0.13), rgba(60,111,240,0.08) 45%, transparent 70%);
+    transform: translate(-50%,-50%);
+    z-index: 0;
+    will-change: transform;
+    transition: opacity .3s ease;
+  }
+  @media (hover: none){ #glow{ display: none; } }
+
+  /* ---------- NAV ---------- */
+  .nav-float{
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 8px 8px;
+    display: flex;
+    gap: 4px;
+    box-shadow: 0 8px 30px rgba(23,21,31,0.08);
+  }
+  .nav-float a{
+    font-family: var(--mono);
+    font-size: 12.5px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 8px 16px;
+    border-radius: 100px;
+    transition: background .2s ease, color .2s ease;
+  }
+  .nav-float a:hover{ background: var(--ink); color: #fff; }
+  @media (max-width: 640px){ .nav-float{ display: none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position: relative;
+    padding: 140px 0 80px;
+    text-align: center;
+    z-index: 1;
+  }
+  .badge-row{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .float-badge{
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    animation: floaty 5s ease-in-out infinite;
+  }
+  .float-badge:nth-child(2){ animation-delay: .6s; }
+  .float-badge:nth-child(3){ animation-delay: 1.2s; }
+  .float-badge:nth-child(4){ animation-delay: 1.8s; }
+  @keyframes floaty{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(-7px); }
+  }
+  h1.hero-title{
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(40px, 7vw, 76px);
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin-bottom: 20px;
+  }
+  h1.hero-title .hl{
+    background: linear-gradient(100deg, var(--pink), var(--blue));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub{
+    font-size: 17.5px;
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: 0 auto 34px;
+  }
+  .hero-actions{ display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn{
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 13px 24px;
+    border-radius: 100px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-fill{ background: var(--ink); color: #fff; }
+  .btn-fill:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 24px rgba(23,21,31,0.25); }
+  .btn-line{ background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .btn-line:hover{ transform: translateY(-2px); box-shadow: 0 10px 24px rgba(23,21,31,0.08); }
+
+  /* ---------- SECTIONS ---------- */
+  section{ position: relative; z-index: 1; padding: 60px 0; }
+  .section-eyebrow{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    display: block;
+  }
+  h2.section-title{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    margin-bottom: 36px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 32px;
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 68ch;
+  }
+  .about-card strong{ color: var(--ink); font-weight: 600; }
+
+  /* ---------- ARTBOARD CANVAS / PROJECTS ---------- */
+  .canvas-hint{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+  .frame-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .frame{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .frame:hover, .frame:focus-visible{
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(23,21,31,0.1);
+  }
+  .frame-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .frame-name{
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .frame-dot{ width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .frame-dims{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .frame-body{ padding: 22px 22px 4px; }
+  .frame-title{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 19px;
+    margin-bottom: 8px;
+  }
+  .frame-desc{
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .frame-detail{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease, padding .35s ease;
+  }
+  .frame.open .frame-detail{ max-height: 220px; }
+  .frame-stack{
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+  }
+  .swatch{
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .frame-toggle{
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    padding: 10px 22px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-top: 1px dashed var(--line);
+  }
+  .frame-toggle .arrow{ transition: transform .25s ease; display: inline-block; }
+  .frame.open .frame-toggle .arrow{ transform: rotate(180deg); }
+
+  @media (max-width: 720px){
+    .frame-grid{ grid-template-columns: 1fr; }
+  }
+
+  /* ---------- SKILLS ---------- */
+  .layers-panel{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px 28px;
+  }
+  .layer-row{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .layer-row:last-child{ border-bottom: none; }
+  .layer-icon{
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    flex-shrink: 0;
+  }
+  .layer-label{
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    width: 92px;
+    flex-shrink: 0;
+  }
+  .layer-tags{ display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill{
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 13px;
+    border-radius: 100px;
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .pill:hover{ transform: translateY(-2px) rotate(-1deg); box-shadow: 0 6px 14px rgba(23,21,31,0.1); }
+
+  /* ---------- EXPERIENCE STEPPER ---------- */
+  .stepper{
+    display: flex;
+    flex-direction: column;
+  }
+  .step{
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 18px;
+  }
+  .step-rail{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .step-dot{ width: 12px; height: 12px; border-radius: 50%; margin-top: 6px; }
+  .step-line{ flex: 1; width: 2px; background: var(--line); margin-top: 4px; }
+  .step:last-child .step-line{ display: none; }
+  .step-content{ padding-bottom: 28px; }
+  .step-tag{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .step-title{ font-weight: 600; font-size: 15.5px; margin-bottom: 4px; }
+  .step-desc{ color: var(--ink-soft); font-size: 13.5px; max-width: 60ch; }
+
+  /* ---------- EDUCATION ---------- */
+  .edu-card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .edu-name{ font-family: var(--display); font-weight: 700; font-size: 19px; }
+  .edu-degree{ color: var(--ink-soft); font-size: 14px; margin-top: 4px; }
+  .gpa-badge{
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 22px;
+    background: linear-gradient(100deg, var(--pink-soft), var(--blue-soft));
+    padding: 10px 20px;
+    border-radius: 12px;
+  }
+  .lang-row{ display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .lang-chip{
+    font-family: var(--mono);
+    font-size: 12.5px;
+    padding: 7px 14px;
+    border-radius: 100px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .lang-chip b{ color: var(--pink); }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background: var(--ink);
+    color: var(--canvas);
+    padding: 70px 0 40px;
+    margin-top: 30px;
+    border-radius: 32px 32px 0 0;
+  }
+  .footer-title{
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(30px, 5vw, 44px);
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .footer-title .hl{
+    background: linear-gradient(100deg, var(--pink), var(--yellow));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .footer-sub{ color: #A39FBE; margin-bottom: 34px; max-width: 46ch; }
+  .contact-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+  .contact-item{
+    font-family: var(--mono);
+    font-size: 13.5px;
+    padding: 16px 18px;
+    border: 1px solid #322D45;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+    color: var(--canvas);
+    transition: border-color .2s ease, transform .2s ease, background .2s ease;
+  }
+  .contact-item:hover{ border-color: var(--pink); transform: translateY(-3px); background: rgba(255,92,138,0.06); }
+  .contact-label{ color: #8A85A8; font-size: 11px; }
+  .footer-bottom{
+    border-top: 1px solid #322D45;
+    padding-top: 22px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #8A85A8;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  @media (max-width: 640px){
+    .contact-grid{ grid-template-columns: 1fr; }
+    .step-content{ padding-bottom: 22px; }
+  }
+
+  .reveal{
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .reveal.in{ opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="glow"></div>
+
+<nav class="nav-float">
+  <a href="#about">about</a>
+  <a href="#work">work</a>
+  <a href="#skills">skills</a>
+  <a href="#path">path</a>
+  <a href="#contact">contact</a>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="badge-row">
+      <span class="float-badge">🎨 UI/UX Design</span>
+      <span class="float-badge">⚙️ Full-Stack</span>
+      <span class="float-badge">🤖 Applied ML</span>
+      <span class="float-badge">📍 Tamil Nadu, IN</span>
+    </div>
+    <h1 class="hero-title">Hi, I'm Harshini —<br>I design <span class="hl">things people enjoy using.</span></h1>
+    <p class="hero-sub">IT undergraduate who moves between Figma and full-stack code, turning rough ideas — a blood request, a food order, a mood — into interfaces that feel simple.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn btn-fill">Explore the work</a>
+      <a href="#contact" class="btn btn-line">Say hello</a>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <span class="section-eyebrow">// 01</span>
+    <h2 class="section-title">About</h2>
+    <div class="about-card">
+      I'm an Information Technology undergraduate at <strong>Kumaraguru College of Technology</strong>, most interested in the space where interface design meets working software. Every project below started life as a sketch of a screen and ended as something real — a registered donor, a placed order, a generated recommendation. I like details, I learn tools fast, and I care whether the thing I built is actually pleasant to use.
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <span class="section-eyebrow">// 02</span>
+    <h2 class="section-title">Selected work</h2>
+    <p class="canvas-hint">tap a frame to open ↓</p>
+    <div class="frame-grid">
+
+      <div class="frame reveal" tabindex="0" role="button" aria-expanded="false">
+        <div class="frame-bar">
+          <span class="frame-name"><span class="frame-dot" style="background:var(--pink)"></span>Frame 01 — Donor App</span>
+          <span class="frame-dims">375 × 812</span>
+        </div>
+        <div class="frame-body">
+          <div class="frame-title">Blood Donation Application</div>
+          <p class="frame-desc">Connecting donors and recipients through registration, real-time requests, and search by blood type and location.</p>
+          <div class="frame-detail">
+            <div class="frame-stack">
+              <span class="swatch" style="background:var(--pink-soft); color:var(--pink)">HTML</span>
+              <span class="swatch" style="background:var(--pink-soft); color:var(--pink)">CSS</span>
+              <span class="swatch" style="background:var(--pink-soft); color:var(--pink)">JavaScript</span>
+              <span class="swatch" style="background:var(--pink-soft); color:var(--pink)">Node.js</span>
+              <span class="swatch" style="background:var(--pink-soft); color:var(--pink)">Express.js</span>
+              <span class="swatch" style="background:var(--pink-soft); color:var(--pink)">MongoDB</span>
+            </div>
+          </div>
+        </div>
+        <div class="frame-toggle"><span class="arrow">▾</span> stack & details</div>
+      </div>
+
+      <div class="frame reveal" tabindex="0" role="button" aria-expanded="false">
+        <div class="frame-bar">
+          <span class="frame-name"><span class="frame-dot" style="background:var(--blue)"></span>Frame 02 — Food App</span>
+          <span class="frame-dims">390 × 844</span>
+        </div>
+        <div class="frame-body">
+          <div class="frame-title">Food Ordering Application</div>
+          <p class="frame-desc">Responsive food delivery experience — restaurant listings, menu browsing, cart, and order confirmation.</p>
+          <div class="frame-detail">
+            <div class="frame-stack">
+              <span class="swatch" style="background:var(--blue-soft); color:var(--blue)">HTML</span>
+              <span class="swatch" style="background:var(--blue-soft); color:var(--blue)">CSS</span>
+              <span class="swatch" style="background:var(--blue-soft); color:var(--blue)">JavaScript</span>
+            </div>
+          </div>
+        </div>
+        <div class="frame-toggle"><span class="arrow">▾</span> stack & details</div>
+      </div>
+
+      <div class="frame reveal" tabindex="0" role="button" aria-expanded="false">
+        <div class="frame-bar">
+          <span class="frame-name"><span class="frame-dot" style="background:var(--yellow)"></span>Frame 03 — Basket ML</span>
+          <span class="frame-dims">1440 × 900</span>
+        </div>
+        <div class="frame-body">
+          <div class="frame-title">Market Basket Analysis (Apache Spark)</div>
+          <p class="frame-desc">PySpark + Apriori algorithm surfacing purchase patterns, wrapped in an interactive Streamlit UI for CSV upload and rule generation.</p>
+          <div class="frame-detail">
+            <div class="frame-stack">
+              <span class="swatch" style="background:var(--yellow-soft); color:#8A6D00">PySpark</span>
+              <span class="swatch" style="background:var(--yellow-soft); color:#8A6D00">Python</span>
+              <span class="swatch" style="background:var(--yellow-soft); color:#8A6D00">Streamlit</span>
+              <span class="swatch" style="background:var(--yellow-soft); color:#8A6D00">Apriori</span>
+            </div>
+          </div>
+        </div>
+        <div class="frame-toggle"><span class="arrow">▾</span> stack & details</div>
+      </div>
+
+      <div class="frame reveal" tabindex="0" role="button" aria-expanded="false">
+        <div class="frame-bar">
+          <span class="frame-name"><span class="frame-dot" style="background:var(--teal)"></span>Frame 04 — WatchGenie</span>
+          <span class="frame-dims">1440 × 900</span>
+        </div>
+        <div class="frame-body">
+          <div class="frame-title">WatchGenie — AI Movie Recommender</div>
+          <p class="frame-desc">Mood- and genre-based movie recommendations with chatbot interaction, using TF-IDF vectorization and cosine similarity.</p>
+          <div class="frame-detail">
+            <div class="frame-stack">
+              <span class="swatch" style="background:var(--teal-soft); color:#127A63">Python</span>
+              <span class="swatch" style="background:var(--teal-soft); color:#127A63">Streamlit</span>
+              <span class="swatch" style="background:var(--teal-soft); color:#127A63">Machine Learning</span>
+              <span class="swatch" style="background:var(--teal-soft); color:#127A63">TF-IDF</span>
+            </div>
+          </div>
+        </div>
+        <div class="frame-toggle"><span class="arrow">▾</span> stack & details</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <span class="section-eyebrow">// 03</span>
+    <h2 class="section-title">Skills</h2>
+    <div class="layers-panel">
+      <div class="layer-row">
+        <span class="layer-icon" style="background:var(--pink-soft)"></span>
+        <span class="layer-label">languages</span>
+        <div class="layer-tags">
+          <span class="pill">JavaScript</span><span class="pill">Java</span><span class="pill">C++</span><span class="pill">Python</span>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-icon" style="background:var(--blue-soft)"></span>
+        <span class="layer-label">frontend</span>
+        <div class="layer-tags">
+          <span class="pill">HTML</span><span class="pill">CSS</span><span class="pill">UI/UX Fundamentals</span>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-icon" style="background:var(--yellow-soft)"></span>
+        <span class="layer-label">backend</span>
+        <div class="layer-tags">
+          <span class="pill">Node.js</span><span class="pill">Express.js</span><span class="pill">MongoDB</span>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-icon" style="background:var(--teal-soft)"></span>
+        <span class="layer-label">tools</span>
+        <div class="layer-tags">
+          <span class="pill">VS Code</span><span class="pill">Git</span><span class="pill">Android Studio</span>
+        </div>
+      </div>
+      <div class="layer-row">
+        <span class="layer-icon" style="background:var(--canvas)"></span>
+        <span class="layer-label">soft skills</span>
+        <div class="layer-tags">
+          <span class="pill">Attention to detail</span><span class="pill">Communication</span><span class="pill">Problem-solving</span><span class="pill">Teamwork</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="path">
+  <div class="wrap">
+    <span class="section-eyebrow">// 04</span>
+    <h2 class="section-title">Experience & certifications</h2>
+    <div class="stepper">
+      <div class="step">
+        <div class="step-rail"><span class="step-dot" style="background:var(--pink)"></span><span class="step-line"></span></div>
+        <div class="step-content">
+          <span class="step-tag" style="background:var(--pink-soft); color:var(--pink)">internship</span>
+          <div class="step-title">Mobile App Development — Marcellotech</div>
+          <div class="step-desc">Hands-on Android Studio training — designing and developing functional Android apps, applying UI/UX principles, and testing for performance and usability.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-rail"><span class="step-dot" style="background:var(--blue)"></span><span class="step-line"></span></div>
+        <div class="step-content">
+          <span class="step-tag" style="background:var(--blue-soft); color:var(--blue)">certificate</span>
+          <div class="step-title">Web Development Internship — Codsoft</div>
+          <div class="step-desc">Hands-on front-end web development training and delivery.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-rail"><span class="step-dot" style="background:var(--yellow)"></span><span class="step-line"></span></div>
+        <div class="step-content">
+          <span class="step-tag" style="background:var(--yellow-soft); color:#8A6D00">certificate</span>
+          <div class="step-title">AWS Academy Cloud Foundations</div>
+          <div class="step-desc">AWS Academy Graduate — core cloud computing concepts and services.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-rail"><span class="step-dot" style="background:var(--teal)"></span><span class="step-line"></span></div>
+        <div class="step-content">
+          <span class="step-tag" style="background:var(--teal-soft); color:#127A63">certificate</span>
+          <div class="step-title">Software Engineering Certification — Infosys Springboard</div>
+          <div class="step-desc">Foundational software engineering practices and workflow.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-rail"><span class="step-dot" style="background:var(--pink)"></span><span class="step-line"></span></div>
+        <div class="step-content">
+          <span class="step-tag" style="background:var(--pink-soft); color:var(--pink)">certificate</span>
+          <div class="step-title">Cisco Packet Tracer — Course Badge</div>
+          <div class="step-desc">Networking fundamentals using Cisco's simulation environment.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-rail"><span class="step-dot" style="background:var(--blue)"></span></div>
+        <div class="step-content">
+          <span class="step-tag" style="background:var(--blue-soft); color:var(--blue)">certificate</span>
+          <div class="step-title">Skill Development Course — EduSkills Foundation</div>
+          <div class="step-desc">Certified professional and technical skill development program.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <span class="section-eyebrow">// 05</span>
+    <h2 class="section-title">Education</h2>
+    <div class="edu-card">
+      <div>
+        <div class="edu-name">Kumaraguru College of Technology</div>
+        <div class="edu-degree">Bachelor of Technology — Information Technology</div>
+      </div>
+      <div class="gpa-badge">8.45 CGPA</div>
+    </div>
+    <div class="lang-row">
+      <span class="lang-chip"><b>Tamil</b> · Native</span>
+      <span class="lang-chip"><b>English</b> · Professional working proficiency</span>
+      <span class="lang-chip"><b>Kannada</b> · Conversational</span>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-title">Let's design<br><span class="hl">something great.</span></div>
+    <p class="footer-sub">Open to UI/UX and full-stack roles — happy to walk through the thinking behind any project above.</p>
+    <div class="contact-grid">
+      <a class="contact-item" href="mailto:harshinidurgah@gmail.com">
+        <span class="contact-label">email</span>harshinidurgah@gmail.com
+      </a>
+      <a class="contact-item" href="tel:8838622047">
+        <span class="contact-label">phone</span>+91 88386 22047
+      </a>
+      <a class="contact-item" href="https://www.linkedin.com/in/harshini-durga-venkatesh-982435290" target="_blank" rel="noopener">
+        <span class="contact-label">linkedin</span>harshini-durga-venkatesh
+      </a>
+      <a class="contact-item" href="https://github.com/Harshinidurga" target="_blank" rel="noopener">
+        <span class="contact-label">github</span>Harshinidurga
+      </a>
+    </div>
+    <div class="footer-bottom">
+      <span>Dharmapuri, Tamil Nadu, India</span>
+      <span>© 2026 Harshini Durga V</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // cursor glow follower
+  (function(){
+    const glow = document.getElementById('glow');
+    const hasHover = window.matchMedia('(hover: hover)').matches;
+    if(!hasHover) return;
+    let mx = window.innerWidth/2, my = window.innerHeight/2, cx = mx, cy = my;
+    window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function loop(){
+      cx += (mx - cx) * 0.12;
+      cy += (my - cy) * 0.12;
+      glow.style.transform = `translate(${cx}px, ${cy}px) translate(-50%,-50%)`;
+      requestAnimationFrame(loop);
+    }
+    loop();
+  })();
+
+  // click-to-expand frames
+  (function(){
+    document.querySelectorAll('.frame').forEach(f => {
+      function toggle(){
+        const open = f.classList.toggle('open');
+        f.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      f.addEventListener('click', toggle);
+      f.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggle(); }
+      });
+    });
+  })();
+
+  // scroll reveal
+  (function(){
+    const items = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, idx) => {
+        if(e.isIntersecting){
+          setTimeout(() => e.target.classList.add('in'), idx * 60);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    items.forEach(i => io.observe(i));
+  })();
+</script>
+
+</body>
+</html>
